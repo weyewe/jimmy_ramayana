@@ -15,7 +15,7 @@
 development:
   adapter: postgresql
   encoding: unicode
-  database: fasman_development
+  database: jimmy_ramayana_development
   pool: 5
   username: weyewe
 
@@ -40,13 +40,13 @@ development:
 test:
   adapter: postgresql
   encoding: unicode
-  database: fasman_test
+  database: jimmy_ramayana_test
   pool: 5
   username: weyewe
 
 production:
   adapter: postgresql
   encoding: unicode
-  database: fasman_production
+  database: jimmy_ramayana_production
   pool: 5
   username: weyewe
