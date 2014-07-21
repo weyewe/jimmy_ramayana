@@ -1,0 +1,52 @@
+
+(1..3).each do |x|
+  SalesOrder.create_object(
+    :sales_date             => DateTime.now - 6.days         ,
+    :description      => "description stock adjustment #{x}"      ,
+    :contact_id => Contact.first.id 
+  )
+end
+
+puts "Total PO: #{SalesOrder.count}" 
+
+item_array  = Item.all 
+SalesOrder.all.each do |po|
+  (1..3).each do |x|
+    SalesOrderDetail.create_object(
+      :item_id => item_array[x-1].id,
+      :quantity => 10, 
+      :sales_order_id => po.id 
+    )
+    
+     
+  end
+end
+
+SalesOrder.first.confirm_object(:confirmed_at => DateTime.now-2.days)
+SalesOrder.last.confirm_object(:confirmed_at => DateTime.now - 1.days)
+
+puts "Total po detail: #{SalesOrderDetail.count}"
+puts "Total po confirmed: #{SalesOrder.where(:is_confirmed => true).count }"
+
+SalesOrder.where(:is_confirmed => true ).each do |po|
+  DeliveryOrder.create_object(
+    :delivery_date             => DateTime.now - 4.days         ,
+    :description      => "description sales_delivery #{po.id}"      ,
+    :sales_order_id => po.id,
+    :warehouse_id => Warehouse.first.id 
+  )
+end
+
+puts "Total PR: #{DeliveryOrder.count}" 
+
+DeliveryOrder.all.each do |pr|
+  pr.sales_order.sales_order_details.each do |pod|
+    DeliveryOrderDetail.create_object(
+      :sales_order_detail_id => pod.id ,
+      :quantity => pod.quantity - 1 , 
+      :sales_delivery_id => pr.id 
+    )
+  end
+end
+
+puts "Total pr detail: #{DeliveryOrderDetail.count}"
